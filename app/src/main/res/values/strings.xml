@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Blind</string>
+    <string name="object_detection">Object Detection</string>
+    <string name="text_recognition">Text Recognition</string>
+    <string name="todo">TODO</string>
+    <string name="button">Button</string>
+</resources>

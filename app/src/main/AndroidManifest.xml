@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.abdelmaksou.blind">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-sdk tools:overrideLibrary="darren.googlecloudtts" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Blind">
+
+        <service android:name=".soundService.HomeSoundService"  android:enabled="true"></service>
+        <service android:name=".soundService.HomeSegmentSoundService"  android:enabled="true"></service>
+        <service android:name=".soundService.ObjectDetectionSoundService"  android:enabled="true"></service>
+        <service android:name=".soundService.TextRecognitionSoundService"  android:enabled="true"></service>
+        <service android:name=".soundService.InternetSoundService"  android:enabled="true"></service>
+        <service android:name=".soundService.UnknownErrorSoundService"  android:enabled="true"></service>
+        <service android:name=".soundService.WaitSoundService"  android:enabled="true"></service>
+        <activity android:name=".text_recognition"></activity>
+        <activity android:name=".object_detection" />
+        <activity android:name=".Home" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

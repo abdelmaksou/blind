@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    tools:context=".Home">
+
+    <FrameLayout
+        android:id="@+id/homeTextFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#F5FDF7"
+        android:clickable="true"
+        android:onClick="goTo_textRecognition"
+        android:focusable="true"
+        android:longClickable="true">
+
+        <ImageView
+            android:id="@+id/text_recognition_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="45dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginRight="45dp"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:onClick="goTo_textRecognition"
+            app:srcCompat="@drawable/ic_text_recognising"
+            android:focusable="true"
+            android:longClickable="true" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/homeObjectFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#61FFFFFF"
+        android:clickable="true"
+        android:onClick="goTo_objectDetection"
+        android:focusable="true"
+        android:longClickable="true">
+
+        <ImageView
+            android:id="@+id/object_detection_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="45dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginRight="45dp"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:onClick="goTo_objectDetection"
+            app:srcCompat="@drawable/ic_radar"
+            android:focusable="true"
+            android:longClickable="true" />
+    </FrameLayout>
+
+</LinearLayout>

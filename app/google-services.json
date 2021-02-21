@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "225216996077",
+    "project_id": "blind-11b56",
+    "storage_bucket": "blind-11b56.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225216996077:android:c1d93f62868bdcb00722e4",
+        "android_client_info": {
+          "package_name": "com.abdelmaksou.blind"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225216996077-fbu7154be1946q110u60fg7vrg3lb90c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqsCeW-CAGjrlJFOWAp_2up2R4zAzs89g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225216996077-fbu7154be1946q110u60fg7vrg3lb90c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
