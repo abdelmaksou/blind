@@ -13,6 +13,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // initialize first run of activities for the session
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean(Home.class.getCanonicalName(),true).apply();
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean(object_detection.class.getCanonicalName(),true).apply();
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean(text_recognition.class.getCanonicalName(),true).apply();
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
