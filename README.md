@@ -1,4 +1,4 @@
-<img height='175' src="./main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" align="left" hspace="1" vspace="1">
+<img height='175' src="./app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" align="left" hspace="1" vspace="1">
 
 <a href='https://play.google.com/store/apps/details?id=org.fossasia.phimpme'><img align='right' height='46' src='./docs/images/google_play_badge.png'></a>
 
