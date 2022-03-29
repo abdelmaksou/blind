@@ -107,7 +107,7 @@ public class Home extends AppCompatActivity {
         protected Void doInBackground(String... strings) {
             try {
                 // Set the ApiKey and create GoogleCloudTTS.
-                googleCloudTTS = GoogleCloudTTSFactory.create("AIzaSyAqsCeW-CAGjrlJFOWAp_2up2R4zAzs89g");
+                googleCloudTTS = GoogleCloudTTSFactory.create("API_KEY");
 
                 // Load google cloud VoicesList and select the languageCode and voiceName with index (0 ~ N).
                 VoicesList voicesList = googleCloudTTS.load();
