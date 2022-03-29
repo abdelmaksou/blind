@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.abdelmaksou.blind.soundService.HomeSoundService;
 import com.abdelmaksou.blind.soundService.InternetSoundService;
 import com.abdelmaksou.blind.soundService.ObjectDetectionSoundService;
+import com.abdelmaksou.blind.soundService.TextRecognitionSoundService;
 import com.abdelmaksou.blind.soundService.UnknownErrorSoundService;
 import com.abdelmaksou.blind.tfLiteClassifier.tfLiteClassifier;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -63,19 +64,28 @@ public class object_detection extends AppCompatActivity {
     List<Float> confidence = new ArrayList<Float>();
     private com.abdelmaksou.blind.tfLiteClassifier.tfLiteClassifier tfLiteClassifier;
     final Handler handler = new Handler();
+    TTSWavenetGoogle tts = new TTSWavenetGoogle();
     int limit = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // runs the full explanatory audio for the first time only and runs an indicator for the rest
+        if (getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean(object_detection.class.getCanonicalName(), true)) {
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean(object_detection.class.getCanonicalName(),false).apply();
+            // wait 650 ms
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //start service and play music
+                    startService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
+                }
+            }, 650);
 
-        // wait 650 ms
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //start service and play music
-                startService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
-            }
-        }, 650);
+        }
+        else
+        {
+            tts.execute("object detection");
+        }
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -112,6 +122,11 @@ public class object_detection extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
+        //stop service and stop music
+        tts.onProgressUpdate(true);
+        stopService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
+        stopService(new Intent(object_detection.this, InternetSoundService.class));
+        stopService(new Intent(object_detection.this, UnknownErrorSoundService.class));
         Intent i = new Intent(object_detection.this, Home.class);
         startActivity(i);
         finish();
@@ -124,6 +139,7 @@ public class object_detection extends AppCompatActivity {
         limit = 0;
 
         //stop sound
+        tts.onProgressUpdate(true);
         stopService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
         stopService(new Intent(object_detection.this, UnknownErrorSoundService.class));
         stopService(new Intent(object_detection.this, InternetSoundService.class));
@@ -211,7 +227,7 @@ public class object_detection extends AppCompatActivity {
                     }
                     if (limit == 0) {
                         //Toast.makeText(object_detection.this, predection + ", " + vx, Toast.LENGTH_LONG).show();
-                        new TTSWavenetGoogle().execute(predection);
+                        tts.execute(predection);
                         limit = -1;
                     }
                 } catch (IOException e) {
@@ -322,13 +338,15 @@ public class object_detection extends AppCompatActivity {
         cameraView.takePicture();
     }
 
-    private class TTSWavenetGoogle extends AsyncTask<String, Void, Void>
+    private class TTSWavenetGoogle extends AsyncTask<String, Boolean, Void>
     {
+        GoogleCloudTTS googleCloudTTS;
+        Boolean started = false;
         @Override
         protected Void doInBackground(String... strings) {
             try {
                 // Set the ApiKey and create GoogleCloudTTS.
-                GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create("API_KEY");
+                googleCloudTTS = GoogleCloudTTSFactory.create("AIzaSyAqsCeW-CAGjrlJFOWAp_2up2R4zAzs89g");
 
                 // Load google cloud VoicesList and select the languageCode and voiceName with index (0 ~ N).
                 VoicesList voicesList = googleCloudTTS.load();
@@ -341,12 +359,29 @@ public class object_detection extends AppCompatActivity {
 
                 // start speak
                 googleCloudTTS.start(strings[0]);
+                started = true;
             } catch (Exception e) {
                 stopService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
                 stopService(new Intent(object_detection.this, UnknownErrorSoundService.class));
                 startService(new Intent(object_detection.this, InternetSoundService.class));
             }
             return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Boolean... stop){
+            try {
+                if(stop[0] && started)
+                {
+                    started = false;
+                    googleCloudTTS.stop();
+                    googleCloudTTS.close();
+                }
+            } catch (Exception e) {
+                stopService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
+                stopService(new Intent(object_detection.this, UnknownErrorSoundService.class));
+                startService(new Intent(object_detection.this, InternetSoundService.class));
+            }
         }
 
         @Override
@@ -357,6 +392,7 @@ public class object_detection extends AppCompatActivity {
 
     protected void onDestroy() {
         //stop service and stop music
+        tts.onProgressUpdate(true);
         stopService(new Intent(object_detection.this, ObjectDetectionSoundService.class));
         stopService(new Intent(object_detection.this, InternetSoundService.class));
         stopService(new Intent(object_detection.this, UnknownErrorSoundService.class));
