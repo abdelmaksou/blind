@@ -15,5 +15,4 @@ is an Android Application for people who are blind. The application simulates so
 
 ## License
 
-This project is currently licensed under the GNU General Public License v3. A copy of [LICENSE](LICENSE.md) is to be present along with the source code. To obtain the software under a different license, please contact [FOSSASIA](https://fossasia.org/).
-
+This project is currently licensed under the MIT License. A copy of [LICENSE](LICENSE.md) is to be present along with the source code.
