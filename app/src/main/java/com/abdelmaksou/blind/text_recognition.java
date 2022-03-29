@@ -20,6 +20,7 @@ import com.abdelmaksou.blind.soundService.HomeSoundService;
 import com.abdelmaksou.blind.soundService.InternetSoundService;
 import com.abdelmaksou.blind.soundService.ObjectDetectionSoundService;
 import com.abdelmaksou.blind.soundService.TextRecognitionSoundService;
+import com.abdelmaksou.blind.soundService.UnknownErrorSoundService;
 import com.abdelmaksou.blind.soundService.WaitSoundService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,20 +52,27 @@ public class text_recognition extends AppCompatActivity {
     FrameLayout frameLayout;
     ImageView imageView;
     final Handler handler = new Handler();
+    TTSWavenetGoogle tts = new TTSWavenetGoogle();
     int limit = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // wait 850 ms
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //start service and play music
-                startService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
-            }
-        }, 850);
-
+        // runs the full explanatory audio for the first time only and runs an indicator for the rest
+        if (getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean(text_recognition.class.getCanonicalName(), true)) {
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit().putBoolean(text_recognition.class.getCanonicalName(),false).apply();
+            // wait 850 ms
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //start service and play music
+                    startService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
+                }
+            }, 850);
+        }
+        else
+        {
+            tts.execute("text recognition");
+        }
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
@@ -96,14 +104,16 @@ public class text_recognition extends AppCompatActivity {
 
     }
 
-    private class TTSWavenetGoogle extends AsyncTask<String, Void, Void>
+    private class TTSWavenetGoogle extends AsyncTask<String, Boolean, Void>
     {
+        GoogleCloudTTS googleCloudTTS;
+        Boolean started = false;
         @Override
         protected Void doInBackground(String... strings) {
             try {
 
                 // Set the ApiKey and create GoogleCloudTTS.
-                GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create("API_KEY");
+                googleCloudTTS = GoogleCloudTTSFactory.create("AIzaSyAqsCeW-CAGjrlJFOWAp_2up2R4zAzs89g");
 
                 // Load google cloud VoicesList and select the languageCode and voiceName with index (0 ~ N).
                 VoicesList voicesList = googleCloudTTS.load();
@@ -116,12 +126,28 @@ public class text_recognition extends AppCompatActivity {
 
                 // start speak
                 googleCloudTTS.start(strings[0]);
+                started = true;
             } catch (Exception e) {
                 stopService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
                 stopService(new Intent(text_recognition.this, WaitSoundService.class));
                 startService(new Intent(text_recognition.this, InternetSoundService.class));
             }
             return null;
+        }
+        @Override
+        protected void onProgressUpdate(Boolean... stop){
+            try {
+                if(stop[0] && started)
+                {
+                    started = false;
+                    googleCloudTTS.stop();
+                    googleCloudTTS.close();
+                }
+            } catch (Exception e) {
+                stopService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
+                stopService(new Intent(text_recognition.this, WaitSoundService.class));
+                startService(new Intent(text_recognition.this, InternetSoundService.class));
+            }
         }
 
         @Override
@@ -134,6 +160,11 @@ public class text_recognition extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
+        //stop service and stop music
+        tts.onProgressUpdate(true);
+        stopService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
+        stopService(new Intent(text_recognition.this, WaitSoundService.class));
+        stopService(new Intent(text_recognition.this, InternetSoundService.class));
         Intent i = new Intent(text_recognition.this, Home.class);
         startActivity(i);
         finish();
@@ -143,6 +174,7 @@ public class text_recognition extends AppCompatActivity {
     public void captureAndRecognise(View v)
     {
         //stop sound
+        tts.onProgressUpdate(true);
         stopService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
         stopService(new Intent(text_recognition.this, WaitSoundService.class));
         stopService(new Intent(text_recognition.this, InternetSoundService.class));
@@ -177,7 +209,7 @@ public class text_recognition extends AppCompatActivity {
                                 public void run() {
                                     if (limit == 0) {
                                         //Toast.makeText(text_recognition.this, "No text detected", Toast.LENGTH_LONG).show();
-                                        new TTSWavenetGoogle().execute("No text detected");
+                                        tts.execute("No text detected");
                                         limit = -1;
                                     }
                                 }
@@ -192,7 +224,7 @@ public class text_recognition extends AppCompatActivity {
                             }
                             if (limit == 0) {
                                 //Toast.makeText(text_recognition.this, text, Toast.LENGTH_LONG).show();
-                                new TTSWavenetGoogle().execute(text);
+                                tts.execute(text);
                                 limit = -1;
                             }
                         }
@@ -216,11 +248,13 @@ public class text_recognition extends AppCompatActivity {
 
     protected void onDestroy() {
         //stop service and stop music
+        tts.onProgressUpdate(true);
         stopService(new Intent(text_recognition.this, TextRecognitionSoundService.class));
         stopService(new Intent(text_recognition.this, WaitSoundService.class));
         stopService(new Intent(text_recognition.this, InternetSoundService.class));
         super.onDestroy();
     }
+
 
     public void textInstructionsAgain(View v)
     {
