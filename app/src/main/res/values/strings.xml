@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Blind</string>
+    <string name="app_name">RepEye</string>
     <string name="object_detection">Object Detection</string>
     <string name="text_recognition">Text Recognition</string>
     <string name="todo">TODO</string>
