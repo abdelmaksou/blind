@@ -1,7 +1,7 @@
 <img height='175' src="./app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" align="left" hspace="1" vspace="1">
 
 # RepEye
-is an Android Application for people who are blind. The application simulates some of the basic function of human eye, object detection and reading. RebEye has a user-friendly exprience for both blind and others as the application uses computer generated voice to guide the user through the different screens.
+is an Android Application for people who are blind. The application simulates some of the basic function of human eye, object detection and reading. RebEye has a user-friendly experience for both blind and others as the application uses computer generated voice to guide the user through the different screens.
 
 ## Screenshots
 
